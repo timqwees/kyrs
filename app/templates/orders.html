@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заказы</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+  <div class="header">
+    <div class="container">
+      <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+      <nav class="nav">
+        <a href="{% url 'index' %}">Рестораны</a>
+        <a href="{% url 'orders' %}">{% if user.is_superuser %}Все заказы{% else %}Мои заказы{% endif %}</a>
+        <a href="{% url 'product_list' %}">Продукты</a>
+        <a href="{% url 'cart' %}" class="cart-link">
+          Корзина{% if cart_items_count > 0 %} ({{ cart_items_count }}){% endif %}
+        </a>
+        <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+        {% if user.is_superuser %}
+        <a href="/admin/" class="admin-link">Админ-панель</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>{% if user.is_superuser %}Все заказы{% else %}Мои заказы{% endif %}</h1>
+
+    {% if orders %}
+    <div class="order-list">
+      {% for order in orders %}
+      <div class="order-item">
+        <div class="order-item-header">
+          <a href="{% url 'order_detail' order.id %}">Заказ #{{ order.id }}</a>
+          <span class="status {{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+        <div class="order-item-info">
+          <span><strong>Ресторан:</strong> {{ order.restaurant.name }}</span>
+          {% if user.is_superuser %}
+          <span><strong>Клиент:</strong> {{ order.customer.username }}</span>
+          {% endif %}
+          <span><strong>Сумма:</strong> {{ order.total_price }} ₽</span>
+          <span><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">📦</div>
+      <h3>Заказов пока нет</h3>
+      <p>Выберите ресторан и оформите заказ</p>
+      <a href="{% url 'index' %}" class="btn" style="margin-top: 32px;"><span>Выбрать ресторан</span></a>
+    </div>
+    {% endif %}
+  </div>
+</body>
+
+</html>

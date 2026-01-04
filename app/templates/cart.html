@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+            <nav class="nav">
+                <a href="{% url 'index' %}">Рестораны</a>
+                <a href="{% url 'orders' %}">Мои заказы</a>
+                <a href="{% url 'product_list' %}">Продукты</a>
+                <a href="{% url 'cart' %}" class="cart-link">
+                    Корзина{% if cart_items_count > 0 %} ({{ cart_items_count }}){% endif %}
+                </a>
+                <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+                {% if user.is_superuser %}
+                <a href="/admin/" class="admin-link">Админ-панель</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h1>Корзина</h1>
+
+        {% if cart_items %}
+        <table class="order-items-table">
+            <thead>
+                <tr>
+                    <th>Блюдо</th>
+                    <th>Количество</th>
+                    <th style="text-align: right;">Сумма</th>
+                    <th style="text-align: right;">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td class="item-name">{{ item.product.name }}</td>
+                    <td>
+                        <form method="post" action="{% url 'update_cart' item.product.id %}" style="display: inline-flex; gap: 10px; align-items: center;">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 60px; padding: 8px; background: #111; border: 1px solid #2a2a2a; color: #fff;">
+                            <button type="submit" style="padding: 8px 16px; background: #fff; color: #000; border: none; cursor: pointer; font-size: 0.85rem;">Обновить</button>
+                        </form>
+                    </td>
+                    <td class="item-price">{{ item.total }} ₽</td>
+                    <td style="text-align: right;">
+                        <form method="post" action="{% url 'remove_from_cart' item.product.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="padding: 8px 16px; background: transparent; color: #fff; border: 1px solid #2a2a2a; cursor: pointer; font-size: 0.85rem;">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="order-total">
+            <div class="order-total-label">Итого</div>
+            <div class="order-total-value">{{ total_price }} ₽</div>
+        </div>
+
+        <div style="margin-top: 32px; display: flex; gap: 20px;">
+            <a href="{% url 'index' %}" class="btn-secondary"><span>Продолжить покупки</span></a>
+            <a href="{% url 'checkout' %}" class="btn"><span>Оформить заказ</span></a>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🛒</div>
+            <h3>Корзина пуста</h3>
+            <p>Добавьте блюда из ресторанов, чтобы оформить заказ</p>
+            <a href="{% url 'index' %}" class="btn" style="margin-top: 32px;"><span>Выбрать ресторан</span></a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

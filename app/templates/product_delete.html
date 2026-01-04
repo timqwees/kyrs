@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удалить продукт</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+            <nav class="nav">
+                <a href="{% url 'index' %}">Рестораны</a>
+                <a href="{% url 'product_list' %}">Продукты</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <a href="{% url 'product_list' %}" class="btn-secondary" style="margin-top: 0;"><span>← Назад к продуктам</span></a>
+
+        <div class="form-container">
+            <h1>Удалить продукт</h1>
+
+            <div style="margin: 32px 0;">
+                <p style="font-size: 1.2rem; margin-bottom: 16px;">Вы уверены, что хотите удалить продукт:</p>
+                <div style="background: #111; border: 1px solid #2a2a2a; padding: 24px; margin: 24px 0;">
+                    <h3 style="margin-bottom: 12px;">{{ product.name }}</h3>
+                    <p style="color: #aaa; margin: 8px 0;">{{ product.description }}</p>
+                    <p style="color: #fff; margin: 8px 0; font-size: 1.2rem; font-weight: 600;">{{ product.price }} ₽</p>
+                    <p style="color: #888; margin: 8px 0;">Ресторан: {{ product.restaurant.name }}</p>
+                </div>
+                <p style="color: #ffaaaa;">Это действие нельзя отменить!</p>
+            </div>
+
+            <form method="post" style="margin-top: 32px;">
+                {% csrf_token %}
+                <div style="display: flex; gap: 16px;">
+                    <button type="submit" class="btn" style="background: #ff4444; border-color: #ff4444;"><span>Удалить</span></button>
+                    <a href="{% url 'product_list' %}" class="btn-secondary"><span>Отмена</span></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

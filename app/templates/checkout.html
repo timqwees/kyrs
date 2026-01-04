@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+            <nav class="nav">
+                <a href="{% url 'index' %}">Рестораны</a>
+                <a href="{% url 'orders' %}">Мои заказы</a>
+                <a href="{% url 'product_list' %}">Продукты</a>
+                <a href="{% url 'cart' %}" class="cart-link">
+                    Корзина{% if cart_items_count > 0 %} ({{ cart_items_count }}){% endif %}
+                </a>
+                <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+                {% if user.is_superuser %}
+                <a href="/admin/" class="admin-link">Админ-панель</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="{% url 'cart' %}" class="btn-secondary" style="margin-top: 0;"><span>← Назад в корзину</span></a>
+
+        <h1 style="margin-top: 32px;">Оформление заказа</h1>
+
+        <div class="restaurant-info" style="margin-bottom: 32px;">
+            <div class="restaurant-info-item">
+                <strong>Ресторан</strong>
+                <span>{{ restaurant.name }}</span>
+            </div>
+            <div class="restaurant-info-item">
+                <strong>Адрес ресторана</strong>
+                <span>{{ restaurant.address }}</span>
+            </div>
+        </div>
+
+        <div class="order-items-section">
+            <h2>Ваш заказ</h2>
+            <table class="order-items-table">
+                <thead>
+                    <tr>
+                        <th>Блюдо</th>
+                        <th>Количество</th>
+                        <th style="text-align: right;">Сумма</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td class="item-name">{{ item.product.name }}</td>
+                        <td class="item-quantity">{{ item.quantity }} × {{ item.product.price }} ₽</td>
+                        <td class="item-price">{{ item.total }} ₽</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="order-total">
+                <div class="order-total-label">Итого</div>
+                <div class="order-total-value">{{ total_price }} ₽</div>
+            </div>
+        </div>
+
+        <div class="form-container" style="margin-top: 48px;">
+            <h2>Адрес доставки</h2>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                    {{ form.address }}
+                </div>
+                <button type="submit" class="btn"><span>Подтвердить заказ</span></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+            <nav class="nav">
+                <a href="{% url 'index' %}">Рестораны</a>
+                <a href="{% url 'login' %}">Вход</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <h1>Регистрация</h1>
+
+            {% if form.errors %}
+            <div class="messages">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="message message-error">{{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="message message-error">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                </div>
+                <button type="submit" class="btn"><span>Зарегистрироваться</span></button>
+            </form>
+
+            <p style="margin-top: 24px; text-align: center;">
+                Уже есть аккаунт? <a href="{% url 'login' %}" style="color: #fff; text-decoration: underline;">Войдите</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

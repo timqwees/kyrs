@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Доставка еды</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+  <div class="header">
+    <div class="container">
+      <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+      <nav class="nav">
+        <a href="{% url 'index' %}">Рестораны</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'orders' %}">Мои заказы</a>
+        <a href="{% url 'product_list' %}">Продукты</a>
+        <a href="{% url 'cart' %}" class="cart-link">
+          Корзина{% if cart_items_count > 0 %} ({{ cart_items_count }}){% endif %}
+        </a>
+        <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+        {% else %}
+        <a href="{% url 'login' %}">Вход</a>
+        <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+        {% if user.is_superuser %}
+        <a href="/admin/" class="admin-link">Админ-панель</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="message message-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h1>Рестораны</h1>
+
+    {% if restaurants %}
+    <div class="restaurant-list">
+      {% for restaurant in restaurants %}
+      <a href="{% url 'restaurant_detail' restaurant.id %}" class="restaurant-card">
+        <div class="restaurant-card-content">
+          <h3>{{ restaurant.name }}</h3>
+          <div class="restaurant-card-meta">
+            <p>📍 {{ restaurant.address }}</p>
+            <p>📞 {{ restaurant.phone }}</p>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">🍽️</div>
+      <h3>Ресторанов пока нет</h3>
+      <p>Чтобы начать работу, добавьте рестораны через админ-панель</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+
+</html>

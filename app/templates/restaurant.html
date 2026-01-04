@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+            <nav class="nav">
+                <a href="{% url 'index' %}">Рестораны</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'orders' %}">Мои заказы</a>
+                <a href="{% url 'product_list' %}">Продукты</a>
+                <a href="{% url 'cart' %}" class="cart-link">
+                    Корзина{% if cart_items_count > 0 %} ({{ cart_items_count }}){% endif %}
+                </a>
+                <a href="{% url 'logout' %}">Выход ({{ user.username }})</a>
+                {% else %}
+                <a href="{% url 'login' %}">Вход</a>
+                <a href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+                {% if user.is_superuser %}
+                <a href="/admin/" class="admin-link">Админ-панель</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <a href="{% url 'index' %}" class="btn-secondary" style="margin-top: 0;"><span>← Назад к ресторанам</span></a>
+
+        <h1 style="margin-top: 32px;">{{ restaurant.name }}</h1>
+
+        <div class="restaurant-info">
+            <div class="restaurant-info-item">
+                <strong>Адрес</strong>
+                <span>{{ restaurant.address }}</span>
+            </div>
+            <div class="restaurant-info-item">
+                <strong>Телефон</strong>
+                <span>{{ restaurant.phone }}</span>
+            </div>
+        </div>
+
+        <h2>Меню</h2>
+
+        {% if products %}
+        <div class="product-list">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-card-header">
+                    <strong>{{ product.name }}</strong>
+                    <div class="product-price">{{ product.price }} ₽</div>
+                </div>
+                <p>{{ product.description }}</p>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add_to_cart' product.id %}" style="margin-top: 20px;">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="number" name="quantity" value="1" min="1" style="width: 60px; padding: 8px; background: #111; border: 1px solid #2a2a2a; color: #fff;">
+                        <button type="submit" class="btn btn-small">Добавить в корзину</button>
+                    </div>
+                    {% if product.in_cart > 0 %}
+                    <p style="margin-top: 10px; color: #888; font-size: 0.9rem;">В корзине: {{ product.in_cart }} шт.</p>
+                    {% endif %}
+                </form>
+                {% else %}
+                <p style="margin-top: 20px; color: #888;"><a href="{% url 'login' %}" style="color: #fff; text-decoration: underline;">Войдите</a>, чтобы добавить в корзину</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🍕</div>
+            <h3>Меню пусто</h3>
+            <p>В этом ресторане пока нет блюд</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
