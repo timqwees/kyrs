@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN chmod +x run.sh
 EXPOSE 8080
-CMD ./run.sh
+CMD ["./run.sh"]

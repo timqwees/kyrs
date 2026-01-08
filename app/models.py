@@ -15,9 +15,10 @@ class Restaurant(models.Model):
     history = HistoricalRecords()
 
     class Meta:
-        verbose_name = "Ресторан"
-        verbose_name_plural = "Рестораны"
-        ordering = ['name']
+        verbose_name = "Ресторан"# Единственное число
+        verbose_name_plural = "Рестораны"# Множественное число
+        ordering = ['name']# Сортировка по умолчанию
+        #В админ-панели: заголовки "Рестораны", "Продукты", "Заказы"
 
     def __str__(self):
         return self.name

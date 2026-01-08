@@ -9,7 +9,6 @@ from django.db.models import Q
 
 # Callback функции для Unfold
 def dashboard_callback(request):
-    from django.contrib.contenttypes.models import ContentType
     from .models import Order, Product, Restaurant, Courier
 
     return {
@@ -19,17 +18,19 @@ def dashboard_callback(request):
         "couriers_count": Courier.objects.count(),
     }
 
+
 def command_search_callback(request, queryset, term):
     """Callback для поиска в командах (например, в ModelAdmin с Unfold)"""
     if not term or not term.strip():
         return queryset
 
     return queryset.filter(
-        Q(name__icontains=term) |
-        Q(description__icontains=term)
+        Q(name__icontains=term)
+        | Q(description__icontains=term)
     )
 
 
+# Ресурсы для экспорта
 class OrderItemInline(admin.TabularInline):
     """Инлайн для элементов заказа"""
     model = OrderItem
@@ -46,8 +47,9 @@ class ProductResource(resources.ModelResource):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'description', 'price', 'restaurant_name', 'created_at')
-        export_order = ('id', 'name', 'description', 'restaurant_name', 'price', 'formatted_price', 'created_at')
+        fields = ('id', 'name', 'description', 'price', 'restaurant_name')
+        export_order = ('id', 'name', 'description', 'restaurant_name',
+                        'price', 'formatted_price', 'created_at')
 
     def dehydrate_formatted_price(self, product):
         """Форматирование цены"""
@@ -68,10 +70,12 @@ class OrderResource(resources.ModelResource):
 
     class Meta:
         model = Order
-        fields = ('id', 'customer_name', 'restaurant_name', 'status', 'status_display',
-                  'address', 'total_price', 'formatted_total', 'created_at', 'formatted_date')
-        export_order = ('id', 'customer_name', 'restaurant_name', 'status', 'status_display',
-                       'address', 'total_price', 'formatted_total', 'created_at', 'formatted_date')
+        fields = ('id', 'customer_name', 'restaurant_name', 'status',
+                  'status_display', 'address', 'total_price', 'formatted_total',
+                  'created_at', 'formatted_date')
+        export_order = ('id', 'customer_name', 'restaurant_name', 'status',
+                        'status_display', 'address', 'total_price',
+                        'formatted_total', 'created_at', 'formatted_date')
 
     def dehydrate_status_display(self, order):
         """Преобразование статуса в читабельный формат"""
@@ -101,6 +105,7 @@ class OrderResource(resources.ModelResource):
             created_at__gte=month_ago
         )
 
+
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
     """Админ-панель для ресторанов"""
@@ -118,26 +123,15 @@ class RestaurantAdmin(admin.ModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(ImportExportModelAdmin):
+class ProductAdmin(admin.ModelAdmin):
     """Админ-панель для продуктов"""
-    resource_class = ProductResource
-    list_display = ('name', 'restaurant', 'price', 'get_order_count', 'created_at')
-    list_filter = ('restaurant', 'created_at', 'price')
+    list_display = ('name', 'restaurant', 'price', 'get_order_count')
+    list_filter = ('restaurant', 'price')
     search_fields = ('name', 'description')
     list_display_links = ('name',)
     raw_id_fields = ('restaurant',)
-    date_hierarchy = 'created_at'
-    fieldsets = (
-        ('Основная информация', {
-            'fields': ('name', 'restaurant', 'description')
-        }),
-        ('Цена', {
-            'fields': ('price',)
-        }),
-        ('Дата', {
-            'fields': ('created_at',)
-        }),
-    )
+    exclude = ('created_at',)  # Явно исключаем created_at из формы
+
 
     @admin.display(description='В заказах')
     def get_order_count(self, obj):

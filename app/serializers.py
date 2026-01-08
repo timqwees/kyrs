@@ -7,8 +7,9 @@ class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для пользователя"""
     class Meta:
         model = User
-        #возвращяемые поля
+        # возвращяемые поля
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
 
 class RestaurantSerializer(serializers.ModelSerializer):
     """Сериализатор для ресторана"""

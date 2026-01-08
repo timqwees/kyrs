@@ -7,16 +7,18 @@ from django.db.models import Q, Sum
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import Restaurant, Product, Order, OrderItem
+from .models import Restaurant, Product, Order
 from .serializers import (
-    RestaurantSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-) #DRF
+    RestaurantSerializer, ProductSerializer, OrderSerializer
+)  # DRF
 from .filters import ProductFilter, OrderFilter, RestaurantFilter
 
-"""API RestaurantViewSet"""
+# API RestaurantViewSet
+
+
 class RestaurantViewSet(viewsets.ModelViewSet):
-    #ViewSet для ресторанов
-    queryset = Restaurant.objects.all() #получаем все обьекты полей с Restaurant
+    # ViewSet для ресторанов
+    queryset = Restaurant.objects.all()  # получаем все обьекты полей с Restaurant
     serializer_class = RestaurantSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = RestaurantFilter
@@ -95,7 +97,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             try:
                 min_p, max_p = price_range.split('-')
                 q_objects &= Q(price__gte=float(min_p)) & Q(price__lte=float(max_p))
-            except:
+            except ValueError:
                 pass
 
         # Фильтр по текущему пользователю (рестораны пользователя)
@@ -113,7 +115,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         """Получить популярные продукты (продукты из заказов)"""
         # Сложный запрос с Q: продукты, которые есть в заказах и не отменены
         products = Product.objects.filter(
-            Q(orderitem__order__status__in=['pending', 'preparing', 'ready', 'delivering', 'completed']) &
+            Q(orderitem__order__status__in=['pending', 'preparing', 'ready',
+                                        'delivering', 'completed'])
+            &
             ~Q(orderitem__order__status='cancelled')
         ).distinct().annotate(
             total_ordered=Sum('orderitem__quantity')

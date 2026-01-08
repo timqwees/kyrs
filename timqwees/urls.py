@@ -3,13 +3,12 @@ URL configuration for timqwees project.
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.i18n import set_language as django_set_language
 from rest_framework.routers import DefaultRouter
 from app import views
 from app.viewsets import RestaurantViewSet, ProductViewSet, OrderViewSet
 
 # регистрация маршрутов для viewSet
-router = DefaultRouter()#чтобы интерфейс был не используем simplerouter
+router = DefaultRouter()  # чтобы интерфейс был не используем simplerouter
 """Короче принцип таков:
 маршрутизатор берет viewset функцию и регистрирует его в urls.py
 это значит что мы регистрируем viewset функцию RestaurantViewSet и даем ей имя restaurant

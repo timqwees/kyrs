@@ -31,19 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "unfold",#theme admin panel
+    "unfold",  # theme admin panel
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #fremwork
+    # fremwork
     'rest_framework',
     'django_filters',
     'simple_history',
     'import_export',
-    #app
+    # app
     'app',
 ]
 

@@ -35,7 +35,11 @@ else:
 PYTHON_SCRIPT
 
 echo ""
-echo "4. Запуск сервера разработки..."
+echo "4. Создание тестовых данных..."
+python manage.py create_sample_data
+
+echo ""
+echo "5. Запуск сервера разработки..."
 echo "=================================="
 echo "Сервер будет доступен по адресу: http://localhost:8080"
 echo "Админ-панель: http://localhost:8080/admin"

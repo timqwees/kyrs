@@ -1,5 +1,4 @@
 import django_filters
-from django.db import models
 from .models import Product, Order, Restaurant
 
 

@@ -1,12 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from django.conf import settings
 from decimal import Decimal
-import json
 
 from .models import Restaurant, Product, Order, OrderItem
 from .forms import RegisterForm, LoginForm, OrderForm, ProductForm
@@ -16,6 +13,12 @@ def index(request):
     """Главная страница со списком ресторанов"""
     restaurants = Restaurant.objects.all()
     cart_items_count = get_cart_items_count(request)
+
+    # Отладочный вывод
+    print(f"DEBUG: Found {restaurants.count()} restaurants")
+    for restaurant in restaurants:
+        print(f"DEBUG: Restaurant - ID: {restaurant.id}, Name: {restaurant.name}")
+
     return render(request, 'index.html', {
         'restaurants': restaurants,
         'cart_items_count': cart_items_count
@@ -195,7 +198,6 @@ def remove_from_cart(request, product_id):
 @login_required
 def update_cart(request, product_id):
     """Обновление количества товара в корзине"""
-    product = get_object_or_404(Product, id=product_id)
     quantity = int(request.POST.get('quantity', 1))
 
     cart = request.session.get('cart', {})
