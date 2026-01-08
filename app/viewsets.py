@@ -1,10 +1,9 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from django.db.models import Q, F, Sum
+from django.db.models import Q, Sum
 from django.utils import timezone
 from datetime import timedelta
 
@@ -46,7 +45,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 
         return queryset.select_related('owner')
 
-    @action(detail=False, methods=['get'])
+    @action(detail=True, methods=['get'])
     def my_restaurants(self, request):
         """Получить рестораны текущего пользователя"""
         if not request.user.is_authenticated:

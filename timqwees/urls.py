@@ -38,9 +38,6 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
-    # Смена языка
-    path('i18n/setlang/', django_set_language, name='set_language'),
-
     # Корзина и заказы
     path('cart/', views.cart, name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
