@@ -4,6 +4,30 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 from datetime import datetime, timedelta
 from .models import Restaurant, Product, Courier, Order, OrderItem
+from django.db.models import Q
+
+
+# Callback функции для Unfold
+def dashboard_callback(request):
+    from django.contrib.contenttypes.models import ContentType
+    from .models import Order, Product, Restaurant, Courier
+
+    return {
+        "orders_count": Order.objects.count(),
+        "products_count": Product.objects.count(),
+        "restaurants_count": Restaurant.objects.count(),
+        "couriers_count": Courier.objects.count(),
+    }
+
+def command_search_callback(request, queryset, term):
+    """Callback для поиска в командах (например, в ModelAdmin с Unfold)"""
+    if not term or not term.strip():
+        return queryset
+
+    return queryset.filter(
+        Q(name__icontains=term) |
+        Q(description__icontains=term)
+    )
 
 
 class OrderItemInline(admin.TabularInline):
@@ -76,7 +100,6 @@ class OrderResource(resources.ModelResource):
             status='completed',
             created_at__gte=month_ago
         )
-
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):

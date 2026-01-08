@@ -31,18 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",#theme admin panel
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    #fremwork
     'rest_framework',
     'django_filters',
     'simple_history',
     'import_export',
-
+    #app
     'app',
 ]
 
@@ -111,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-rus'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -119,11 +120,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'app' / 'static',
+]
 
 # Авторизация
 LOGIN_URL = '/login/'
@@ -146,4 +147,84 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+}
+
+UNFOLD = {
+    "SITE_TITLE": "TimQWees",
+    "SITE_HEADER": "Админ-панель",
+    "SITE_SUBHEADER": "Добро пожаловать в административную панель приложения TimQWees",
+    "SITE_LOGO": "https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci80MjQ4MGQ0NzU3MWU3MTFkNDdkM2RiZTViYTJhMTlmYj9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.EHn1hK91cqz36W8u48vBBG4dKpbOVOWaDTX8HsP5Nuk",
+    "SITE_FAVICONS": [
+        {"rel": "icon", "type": "image/png", "href": "https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci80MjQ4MGQ0NzU3MWU3MTFkNDdkM2RiZTViYTJhMTlmYj9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.EHn1hK91cqz36W8u48vBBG4dKpbOVOWaDTX8HsP5Nuk", "sizes": "32x32"},
+        {"rel": "icon", "type": "image/png", "href": "https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci80MjQ4MGQ0NzU3MWU3MTFkNDdkM2RiZTViYTJhMTlmYj9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.EHn1hK91cqz36W8u48vBBG4dKpbOVOWaDTX8HsP5Nuk", "sizes": "16x16"},
+    ],
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "SHOW_BACK_BUTTON": True,
+    "FORMS": {
+        "classes": {
+            "text_input": "form-input block w-full mt-1",
+            "checkbox": "form-checkbox rounded focus:ring-primary text-primary",
+            "button": "btn btn-primary px-4 py-2 rounded",
+            "radio": "form-radio text-primary",
+            "switch": "form-switch text-primary",
+            "file": "form-file block w-full text-sm text-gray-500",
+        },
+    },
+    "COLORS": {
+        "base": {
+            "50": "oklch(98.5% .002 247.839)",
+            "100": "oklch(96.7% .003 264.542)",
+            "200": "oklch(92.8% .006 264.531)",
+            "300": "oklch(87.2% .01 258.338)",
+            "400": "oklch(70.7% .022 261.325)",
+            "500": "oklch(55.1% .027 264.364)",
+            "600": "oklch(44.6% .03 256.802)",
+            "700": "oklch(37.3% .034 259.733)",
+            "800": "oklch(27.8% .033 256.848)",
+            "900": "oklch(21% .034 264.665)",
+            "950": "oklch(13% .028 261.692)",
+        },
+        "primary": {
+            "50": "oklch(97.7% .014 308.299)",
+            "100": "oklch(94.6% .033 307.174)",
+            "200": "oklch(90.2% .063 306.703)",
+            "300": "oklch(82.7% .119 306.383)",
+            "400": "oklch(71.4% .203 305.504)",
+            "500": "oklch(62.7% .265 303.9)",
+            "600": "oklch(55.8% .288 302.321)",
+            "700": "oklch(49.6% .265 301.924)",
+            "800": "oklch(43.8% .218 303.724)",
+            "900": "oklch(38.1% .176 304.987)",
+            "950": "oklch(29.1% .149 302.717)",
+        },
+        "font": {
+            "subtle-light": "var(--color-base-500)",
+            "subtle-dark": "var(--color-base-400)",
+            "default-light": "var(--color-base-600)",
+            "default-dark": "var(--color-base-300)",
+            "important-light": "var(--color-base-900)",
+            "important-dark": "var(--color-base-100)",
+        },
+    },
+    "ENVIRONMENT": "development",
+    "ENVIRONMENT_TITLE_PREFIX": "DEV",
+    "STYLES": [
+        "/static/css/custom-admin.css",
+    ],
+    "COMMAND": {
+        "search_models": True,
+        "show_history": True,
+        "search_callback": "app.admin.command_search_callback",
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "command_search": True,
+        "show_all_applications": True,
+    },
+    "LOGIN": {
+        "image": "/static/images/login-bg.jpg",
+        "redirect_after": "/admin/",
+        "form": "app.forms.CustomAuthenticationForm",
+    },
 }

@@ -11,13 +11,13 @@ from datetime import timedelta
 from .models import Restaurant, Product, Order, OrderItem
 from .serializers import (
     RestaurantSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-)
+) #DRF
 from .filters import ProductFilter, OrderFilter, RestaurantFilter
 
-
+"""API RestaurantViewSet"""
 class RestaurantViewSet(viewsets.ModelViewSet):
-    """ViewSet для ресторанов"""
-    queryset = Restaurant.objects.all()
+    #ViewSet для ресторанов
+    queryset = Restaurant.objects.all() #получаем все обьекты полей с Restaurant
     serializer_class = RestaurantSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = RestaurantFilter

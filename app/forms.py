@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import Product
 
@@ -25,6 +25,25 @@ class LoginForm(forms.Form):
     """Форма входа"""
     username = forms.CharField(label="Имя пользователя")
     password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    """Кастомная форма аутентификации для админ-панели Unfold"""
+    username = forms.CharField(
+        label="Имя пользователя",
+        widget=forms.TextInput(attrs={
+            'class': 'form-input block w-full mt-1',
+            'placeholder': 'Введите имя пользователя',
+            'autofocus': True
+        })
+    )
+    password = forms.CharField(
+        label="Пароль",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-input block w-full mt-1',
+            'placeholder': 'Введите пароль'
+        })
+    )
 
 
 class OrderForm(forms.Form):

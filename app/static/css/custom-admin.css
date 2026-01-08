@@ -1,0 +1,59 @@
+tr:hover,
+li>a:hover {
+  background-color: oklch(0.28 0.03 256.85);
+  padding: .2rem;
+  padding-left: .5rem;
+}
+
+li>a:hover::before {
+  content: '❱❱';
+}
+
+tr,
+li>a {
+  transition: cubic-bezier(0.39, 0.575, 0.565, 1) .25s all;
+}
+
+/* input forms */
+
+fieldset>.border>.form-row>div {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  display: flex;
+  padding: .25rem;
+  padding-left: .5rem;
+  border: 1px solid oklch(0.28 0.03 256.85);
+  border-radius: 10px;
+  width: 25%;
+  padding-block: .5rem;
+  transition: cubic-bezier(0.39, 0.575, 0.565, 1) .25s all;
+}
+
+input:user-valid {
+  border: 1px solid greenyellow;
+}
+
+input:user-invalid {
+  border: 1px solid red;
+}
+
+input:hover,
+button:hover {
+  background-color: oklch(0.28 0.03 256.85);
+}
+
+input:focus {
+  outline: 0 !important;
+}
+
+/* img logo */
+
+img {
+  border-radius: 30%;
+}
