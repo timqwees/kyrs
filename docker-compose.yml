@@ -11,3 +11,40 @@ services:
       - "8080:8080"
     environment:
       - DEBUG=1
+    depends_on:
+      - redis
+
+  # Redis — брокер для Celery
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # Celery worker — выполнение асинхронных задач
+  celery-worker:
+    build: .
+    command: celery -A timqwees worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    environment:
+      - DEBUG=1
+
+  # Celery beat — планировщик периодических задач
+  celery-beat:
+    build: .
+    command: celery -A timqwees beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    environment:
+      - DEBUG=1
+
+  # Mailhog — тестовый SMTP-сервер для проверки отправки писем
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI для просмотра писем

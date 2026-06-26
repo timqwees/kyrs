@@ -28,6 +28,8 @@
         {% endif %}
         {% if user.is_superuser %}
         <a href="/admin/" class="admin-link">Админ-панель</a>
+        <a href="{% url 'dev_tools' %}" style="color: #ff9800;">🛠 Dev Tools</a>
+        <a href="{% url 'oauth2_demo' %}" style="color: #7c3aed;">OAuth2</a>
         {% endif %}
       </nav>
     </div>

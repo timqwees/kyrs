@@ -144,3 +144,26 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('  Администратор: testuser / testpass123'))
         self.stdout.write(self.style.SUCCESS('  Клиент: customer / customerpass123'))
         self.stdout.write(self.style.SUCCESS('  Курьер: courier / courierpass123'))
+
+        # Создание OAuth2 приложения для тестирования
+        try:
+            from oauth2_provider.models import Application
+            oauth_app, created = Application.objects.get_or_create(
+                name='TimQWees API',
+                defaults={
+                    'user': admin_user,
+                    'client_type': Application.CLIENT_CONFIDENTIAL,
+                    'authorization_grant_type': Application.GRANT_PASSWORD,
+                    'skip_authorization': True,
+                }
+            )
+            if created:
+                self.stdout.write(self.style.SUCCESS(''))
+                self.stdout.write(self.style.SUCCESS('OAuth2 Приложение создано:'))
+                self.stdout.write(self.style.SUCCESS(f'  Client ID:     {oauth_app.client_id}'))
+                self.stdout.write(self.style.SUCCESS(f'  Client Secret: {oauth_app.client_secret}'))
+                self.stdout.write(self.style.SUCCESS('  → Скопируйте эти значения в Postman (переменные oauth_client_id, oauth_client_secret)'))
+            else:
+                self.stdout.write(self.style.SUCCESS(f'\nOAuth2 приложение уже существует (Client ID: {oauth_app.client_id})'))
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f'Не удалось создать OAuth2 приложение: {e}'))

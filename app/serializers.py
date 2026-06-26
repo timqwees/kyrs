@@ -34,15 +34,26 @@ class RestaurantSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Телефон должен содержать только цифры и допустимые символы")
         return value
 
-
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для продукта"""
     restaurant_name = serializers.CharField(source='restaurant.name', read_only=True)
+    is_in_cart = serializers.SerializerMethodField()  # флаг: в корзине у пользователя (через контекст)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'restaurant', 'restaurant_name', 'created_at']
+        fields = ['id', 'name', 'description', 'price', 'restaurant', 'restaurant_name', 'created_at', 'is_in_cart']
         read_only_fields = ['created_at']
+
+    def get_is_in_cart(self, obj: Product) -> bool:
+        """
+        Проверяет, находится ли продукт в корзине текущего пользователя.
+        Данные передаются через контекст сериализатора из viewset.
+
+        Args:
+            obj: Объект продукта
+        """
+        cart_product_ids = self.context.get('cart_product_ids', [])
+        return obj.id in cart_product_ids
 
     def validate_price(self, value):
         """Валидация: цена должна быть положительной"""

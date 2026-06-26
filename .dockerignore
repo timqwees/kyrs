@@ -1,13 +1,50 @@
+# Python
 __pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+
+# Virtual environment
 venv/
 .venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Database
+db.sqlite3
 *.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# Git
 .git
 .gitignore
-.DS_Store
+
+# Documentation
+*.md
+README.md
+otchet.txt
+podgotovka_k_zashchite.md
+postman_collection.json

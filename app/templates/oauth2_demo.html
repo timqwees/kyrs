@@ -1,0 +1,309 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>OAuth2 — Демонстрация</title>
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<style>
+		.oauth-card {
+			background: #1e1e2e;
+			border-radius: 12px;
+			padding: 24px;
+			border: 1px solid #333;
+			margin-bottom: 16px;
+		}
+
+		.oauth-card h3 {
+			color: #fff;
+			margin-bottom: 8px;
+		}
+
+		.oauth-card p {
+			color: #aaa;
+			font-size: 14px;
+		}
+
+		.oauth-card code {
+			background: #0f172a;
+			padding: 2px 6px;
+			border-radius: 4px;
+			color: #94a3b8;
+		}
+
+		.step {
+			display: flex;
+			align-items: flex-start;
+			gap: 16px;
+			margin-bottom: 20px;
+		}
+
+		.step-num {
+			background: #7c3aed;
+			color: #fff;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+			flex-shrink: 0;
+		}
+
+		.step-content {
+			flex: 1;
+		}
+
+		.step-content h4 {
+			color: #fff;
+			margin-bottom: 4px;
+		}
+
+		.step-content p {
+			color: #aaa;
+			font-size: 14px;
+		}
+
+		.code-block {
+			background: #0f172a;
+			border: 1px solid #333;
+			border-radius: 8px;
+			padding: 16px;
+			margin: 12px 0;
+			font-family: monospace;
+			font-size: 13px;
+			color: #94a3b8;
+			overflow-x: auto;
+			white-space: pre-wrap;
+		}
+
+		.badge {
+			display: inline-block;
+			padding: 2px 8px;
+			border-radius: 4px;
+			font-size: 11px;
+			margin-left: 8px;
+		}
+
+		.badge-green {
+			background: #166534;
+			color: #4ade80;
+		}
+
+		.badge-red {
+			background: #7f1d1d;
+			color: #f87171;
+		}
+
+		.app-list {
+			list-style: none;
+			padding: 0;
+		}
+
+		.app-list li {
+			background: #0f172a;
+			padding: 12px 16px;
+			border-radius: 8px;
+			margin-bottom: 8px;
+			border: 1px solid #333;
+		}
+
+		.app-list li strong {
+			color: #fff;
+		}
+
+		.app-list li code {
+			color: #94a3b8;
+		}
+
+		.btn-oauth {
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 6px;
+			text-decoration: none;
+			color: #fff;
+			font-size: 14px;
+			margin: 4px;
+		}
+
+		.btn-google {
+			background: #4285f4;
+		}
+
+		.btn-token {
+			background: #7c3aed;
+		}
+
+		.btn-revoke {
+			background: #dc2626;
+		}
+
+		.token-card {
+			background: #162416;
+			border: 1px solid #166534;
+			border-radius: 8px;
+			padding: 16px;
+			margin: 8px 0;
+		}
+
+		.token-card .token-value {
+			font-family: monospace;
+			color: #4ade80;
+			word-break: break-all;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="header">
+		<div class="container">
+			<a href="{% url 'index' %}" class="logo">FOOD DELIVERY</a>
+			<nav class="nav">
+				<a href="{% url 'index' %}">Рестораны</a>
+				<a href="{% url 'dev_tools' %}" style="color: #ff9800;">Dev Tools</a>
+				<a href="{% url 'oauth2_demo' %}" style="color: #7c3aed;">OAuth2</a>
+			</nav>
+		</div>
+	</div>
+
+	<div class="container">
+		{% if messages %}
+		<div class="messages">
+			{% for message in messages %}
+			<div class="message message-{{ message.tags }}">{{ message }}</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<h1>OAuth2 — Протокол авторизации</h1>
+		<p style="color: #aaa;">Полный цикл OAuth2: создание приложения, авторизация, получение токена, использование
+			API</p>
+
+		<!-- Как работает OAuth2 -->
+		<h2 style="color: #fff; margin-top: 32px;">Как работает OAuth2</h2>
+		<div class="oauth-card">
+			<div class="step">
+				<div class="step-num">1</div>
+				<div class="step-content">
+					<h4>Регистрация приложения</h4>
+					<p>Создайте OAuth2 Application через <a href="/admin/oauth2_provider/application/add/"
+							style="color: #7c3aed;">админ-панель</a>. Получите <code>client_id</code> и
+						<code>client_secret</code>.</p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-num">2</div>
+				<div class="step-content">
+					<h4>Запрос авторизации</h4>
+					<p>Клиент перенаправляется на <code>/api/o/authorize/</code> с параметрами
+						<code>response_type=code</code>, <code>client_id</code>, <code>redirect_uri</code>,
+						<code>scope</code>.</p>
+					<div class="code-block">{{ base_url
+						}}api/o/authorize/?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri={{ base_url
+						}}oauth2/callback/&scope=read+write</div>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-num">3</div>
+				<div class="step-content">
+					<h4>Получение authorization code</h4>
+					<p>После одобрения пользователя, сервер редиректит на <code>redirect_uri</code> с параметром
+						<code>code</code>.</p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-num">4</div>
+				<div class="step-content">
+					<h4>Обмен code на access_token</h4>
+					<p>POST-запрос на <code>/api/o/token/</code> с <code>grant_type=authorization_code</code>,
+						<code>code</code>, <code>redirect_uri</code>, <code>client_id</code>,
+						<code>client_secret</code>.</p>
+					<div class="code-block">curl -X POST {{ base_url }}api/o/token/ \
+						-d "grant_type=authorization_code" \
+						-d "code=AUTH_CODE" \
+						-d "redirect_uri={{ base_url }}oauth2/callback/" \
+						-d "client_id=YOUR_CLIENT_ID" \
+						-d "client_secret=YOUR_CLIENT_SECRET"</div>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-num">5</div>
+				<div class="step-content">
+					<h4>Использование токена для API</h4>
+					<p>Добавьте заголовок <code>Authorization: Bearer ACCESS_TOKEN</code> к запросам API.</p>
+					<div class="code-block">curl -H "Authorization: Bearer YOUR_TOKEN" {{ base_url }}api/restaurants/
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Зарегистрированные приложения -->
+		<h2 style="color: #fff; margin-top: 32px;">OAuth2 Applications</h2>
+		{% if applications %}
+		<ul class="app-list">
+			{% for app in applications %}
+			<li>
+				<strong>{{ app.name }}</strong>
+				<span class="badge badge-green">{{ app.authorization_grant_type }}</span>
+				<br>
+				<small>Client ID: <code>{{ app.client_id }}</code></small>
+				<br>
+				<small>Redirect URI: <code>{{ app.redirect_uris }}</code></small>
+				<br>
+				<a href="/api/o/authorize/?response_type=code&client_id={{ app.client_id }}&redirect_uri={{ app.redirect_uris }}&scope=read+write"
+					class="btn-oauth btn-google" style="margin-top: 8px;">
+					Авторизоваться через {{ app.name }}
+				</a>
+			</li>
+			{% endfor %}
+		</ul>
+		{% else %}
+		<div class="oauth-card">
+			<p style="color: #fbbf24;">Нет зарегистрированных OAuth2 приложений.</p>
+			<p>Создайте приложение: <a href="/admin/oauth2_provider/application/add/" style="color: #7c3aed;">Админ →
+					OAuth2 → Add Application</a></p>
+			<p style="font-size: 12px; color: #888;">Укажите: Client type = Confidential, Authorization grant type =
+				Authorization code, Redirect URIs = {{ base_url }}oauth2/callback/</p>
+		</div>
+		{% endif %}
+
+		<!-- Текущие токены -->
+		<h2 style="color: #fff; margin-top: 32px;">Мои токены</h2>
+		{% if access_tokens %}
+		{% for token in access_tokens %}
+		<div class="token-card">
+			<p><strong style="color: #4ade80;">Access Token:</strong></p>
+			<p class="token-value">{{ token.token }}</p>
+			<p style="color: #888; font-size: 12px;">
+				Scope: {{ token.scope }} |
+				Создан: {{ token.created }} |
+				Истекает: {{ token.expires }}
+			</p>
+			<div style="margin-top: 8px;">
+				<div class="code-block">curl -H "Authorization: Bearer {{ token.token }}" {{ base_url }}api/restaurants/
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<div class="oauth-card">
+			<p style="color: #aaa;">У вас пока нет активных OAuth2 токенов. Создайте приложение и авторизуйтесь, чтобы
+				получить токен.</p>
+		</div>
+		{% endif %}
+
+		<!-- OAuth2 endpoints -->
+		<h2 style="color: #fff; margin-top: 32px;">OAuth2 Endpoints</h2>
+		<div class="oauth-card">
+			<p><strong style="color: #fff;">Authorize:</strong> <code>{{ base_url }}api/o/authorize/</code></p>
+			<p><strong style="color: #fff;">Token:</strong> <code>{{ base_url }}api/o/token/</code></p>
+			<p><strong style="color: #fff;">Revoke:</strong> <code>{{ base_url }}api/o/revoke_token/</code></p>
+			<p><strong style="color: #fff;">Introspect:</strong> <code>{{ base_url }}api/o/introspect/</code></p>
+		</div>
+	</div>
+</body>
+
+</html>

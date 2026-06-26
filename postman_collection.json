@@ -1,0 +1,707 @@
+{
+    "info": {
+        "name": "TimQWees - Доставка еды API",
+        "description": "Коллекция запросов для тестирования API сервиса доставки еды TimQWees.\n\nПеременные:\n- base_url: http://localhost:8080 (базовый URL сервера)\n- username/password: testuser/testpass123 (администратор)\n- oauth_client_id/oauth_client_secret: получить через /admin/oauth2_provider/application/\n\nКак запустить:\n1. Запустите сервер: python manage.py runserver 0.0.0.0:8080\n2. Создайте тестовые данные: python manage.py create_sample_data\n3. Импортируйте эту коллекцию в Postman\n4. Запускайте запросы по порядку",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8080",
+            "type": "string"
+        },
+        {
+            "key": "username",
+            "value": "admin",
+            "type": "string"
+        },
+        {
+            "key": "password",
+            "value": "admin",
+            "type": "string"
+        },
+        {
+            "key": "oauth_client_id",
+            "value": "otgIm9mNQiM1H38wywwn9OvL3dmqUykiZwh7QM3d",
+            "type": "string"
+        },
+        {
+            "key": "oauth_client_secret",
+            "value": "pbkdf2_sha256$870000$xNQw3t7W6uOt9fXmSsWtE3$qLsDufI9EPARQpweJyyK4GxhywOgGqkX+RT92dja0qM=",
+            "type": "string"
+        }
+    ],
+    "auth": {
+        "type": "basic",
+        "basic": [
+            {
+                "key": "username",
+                "value": "{{username}}",
+                "type": "string"
+            },
+            {
+                "key": "password",
+                "value": "{{password}}",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "Рестораны",
+            "item": [
+                {
+                    "name": "Список ресторанов",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Детали ресторана",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                "1",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Создать ресторан",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\": \"Новый ресторан\", \"address\": \"ул. Новая, д. 5\", \"phone\": \"+79998887766\", \"owner\": 1}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Статистика ресторанов (аннотации Count+Avg)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/stats/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                "stats",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Фильтр по владельцу",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/?owner_id=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "owner_id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Поиск ресторана (SearchFilter)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/?search=тест",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "тест"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Продукты",
+            "item": [
+                {
+                    "name": "Список продуктов (serializer context: is_in_cart)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Фильтр по цене min/max (Q-объекты + django-filter)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/?min_price=100&max_price=500",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "min_price",
+                                    "value": "100"
+                                },
+                                {
+                                    "key": "max_price",
+                                    "value": "500"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Фильтр по ресторану (FilterSet)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/?restaurant=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "restaurant",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Популярные продукты (аннотации Sum)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/popular_products/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "popular_products",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Статистика цен (аннотации Count+Avg+Sum)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/products/price_stats/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "price_stats",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Массовая скидка (F-выражения)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"restaurant_id\": 1, \"discount_percent\": 15}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/bulk_discount/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "bulk_discount",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Обновить цену продукта",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"price\": 450.00}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/1/update_price/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "1",
+                                "update_price",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Создать продукт",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\": \"Суши сет\", \"description\": \"Набор из 8 роллов\", \"price\": 890.00, \"restaurant\": 1}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                ""
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Заказы",
+            "item": [
+                {
+                    "name": "Список заказов (select_related + prefetch_related)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Фильтр по статусу (FilterSet + django-filter)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/?status=pending",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "pending"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Фильтр по сумме min/max",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/?min_total=100&max_total=2000",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "min_total",
+                                    "value": "100"
+                                },
+                                {
+                                    "key": "max_total",
+                                    "value": "2000"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Недавние заказы (Q-объекты: AND + NOT)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/recent_orders/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "recent_orders",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Статистика заказов (аннотации Count+Sum+Avg)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/order_stats/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "order_stats",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Мои заказы (фильтр по текущему пользователю)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/my_orders/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "my_orders",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Изменить статус (transaction.atomic + Celery task)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"status\": \"delivering\"}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/1/change_status/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "1",
+                                "change_status",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Создать заказ",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"customer\": 1, \"restaurant\": 1, \"address\": \"ул. Ленина, д. 15, кв. 42\", \"status\": \"pending\"}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                ""
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "OAuth2 (django-oauth-toolkit)",
+            "item": [
+                {
+                    "name": "1. Список OAuth2 приложений",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/api/o/applications/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "o",
+                                "applications",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "2. Получить OAuth2 токен (Resource Owner Password)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "grant_type",
+                                    "value": "password"
+                                },
+                                {
+                                    "key": "username",
+                                    "value": "{{username}}"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "{{password}}"
+                                },
+                                {
+                                    "key": "client_id",
+                                    "value": "{{oauth_client_id}}"
+                                },
+                                {
+                                    "key": "client_secret",
+                                    "value": "{{oauth_client_secret}}"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/o/token/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "o",
+                                "token",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "3. Использовать токен для API запроса",
+                    "request": {
+                        "auth": {
+                            "type": "oauth2",
+                            "oauth2": [
+                                {
+                                    "key": "accessToken",
+                                    "value": "PASTE_TOKEN_FROM_STEP_2",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "tokenType",
+                                    "value": "Bearer",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer PASTE_TOKEN_FROM_STEP_2"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/restaurants/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "restaurants",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "4. Introspect токен (проверка валидности)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "token",
+                                    "value": "PASTE_TOKEN_FROM_STEP_2"
+                                },
+                                {
+                                    "key": "client_id",
+                                    "value": "{{oauth_client_id}}"
+                                },
+                                {
+                                    "key": "client_secret",
+                                    "value": "{{oauth_client_secret}}"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/o/introspect/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "o",
+                                "introspect",
+                                ""
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

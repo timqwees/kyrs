@@ -6,6 +6,11 @@ from datetime import datetime, timedelta
 from .models import Restaurant, Product, Courier, Order, OrderItem
 from django.db.models import Q
 
+# Monkey-patch для исправления совместимости unfold с Django 5.1
+from django.template import context as template_context
+if not hasattr(template_context.RequestContext, '_processors_index'):
+    template_context.RequestContext._processors_index = -1
+
 
 # Callback функции для Unfold
 def dashboard_callback(request):

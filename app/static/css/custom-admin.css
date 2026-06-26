@@ -1,6 +1,6 @@
 tr:hover,
 li>a:hover {
-  background-color: oklch(0.28 0.03 256.85);
+  background: oklch(65.262% 0.13628 306.267 / 0.414);
   padding: .2rem;
   padding-left: .5rem;
 }
@@ -28,7 +28,7 @@ input {
   display: flex;
   padding: .25rem;
   padding-left: .5rem;
-  border: 1px solid oklch(0.28 0.03 256.85);
+  border: 1px solid oklch(27.862% 0.03128 258.344 / 0.431);
   border-radius: 10px;
   width: 25%;
   padding-block: .5rem;
@@ -45,7 +45,7 @@ input:user-invalid {
 
 input:hover,
 button:hover {
-  background-color: oklch(0.28 0.03 256.85);
+  background: oklch(27.862% 0.03128 258.344 / 0.437);
 }
 
 input:focus {
